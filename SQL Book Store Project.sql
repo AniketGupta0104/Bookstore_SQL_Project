@@ -88,3 +88,37 @@ JOIN Books b ON a.AuthorID = b.AuthorID
 GROUP BY a.Author_Name
 ORDER BY Avg_Price DESC
 LIMIT 10;
+
+
+#Most Frequently Purchased Genre by Customer
+SELECT c.CustomerID, c.Name, b.Genre, COUNT(*) AS purchase_count
+FROM Customers c
+JOIN Sales s ON c.CustomerID = s.CustomerID
+JOIN Books b ON s.BookID = b.BookID
+GROUP BY c.CustomerID, b.Genre
+ORDER BY c.CustomerID, purchase_count DESC;
+
+#Most Popular Purchase Day of the Week
+SELECT DAYNAME(Sale_Date) AS Day, COUNT(*) AS Num_Sales
+FROM Sales
+GROUP BY Day
+ORDER BY Num_Sales DESC;
+
+
+#Top Cities by Total Revenue
+SELECT c.City, SUM(s.Quantity * b.Price) AS Revenue
+FROM Customers c
+JOIN Sales s ON c.CustomerID = s.CustomerID
+JOIN Books b ON s.BookID = b.BookID
+GROUP BY c.City
+ORDER BY Revenue DESC
+LIMIT 10;
+
+
+# High-Value Customers (Spending Threshold)
+SELECT s.CustomerID, SUM(s.Quantity * b.Price) AS Total_Spent
+FROM Sales s
+JOIN Books b ON s.BookID = b.BookID
+GROUP BY s.CustomerID
+HAVING Total_Spent > 5000
+ORDER BY Total_Spent DESC;
